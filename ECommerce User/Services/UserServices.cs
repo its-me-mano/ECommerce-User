@@ -53,7 +53,7 @@ namespace ECommerce_User.Services
         ///get the logged user 
         ///</summary>
         ///<param name="user"></param>
-        public string GetLoggedId(ClaimsPrincipal User) {
+        public string GetLoggedId(ClaimsPrincipal User){
             string LoggedUserId=String.Empty;
              if (!String.IsNullOrEmpty(ClaimTypes.NameIdentifier))
                  LoggedUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -284,7 +284,7 @@ namespace ECommerce_User.Services
                 item.type = (userDetailRepository.TypeFinder(item.type)).Id.ToString();
 
             }
-            foreach (AddressUpdatingDto item in user.Address)
+            foreach (AddressUpdatingDto item in user.Addresses)
             {
                 if (!userDetailRepository.metaExist(item.Country))
                 {
@@ -350,6 +350,8 @@ namespace ECommerce_User.Services
             UserFromRepo.Addresses = userDetailRepository.GetAddressIds(UserFromRepo.Id).ToList();
             UserFromRepo.Phones = userDetailRepository.GetPhoneIds(UserFromRepo.Id).ToList();
             UserFromRepo.Assets = userDetailRepository.GetAssetIds(UserFromRepo.Id).ToList();
+            UserFromRepo.Cards = userDetailRepository.GetCardIds(UserFromRepo.Id).ToList();
+            UserFromRepo.UPIS = userDetailRepository.GetUPIIds(UserFromRepo.Id).ToList();
             return UserFromRepo;
         }
         ///<summary>

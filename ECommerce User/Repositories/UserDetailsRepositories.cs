@@ -145,7 +145,7 @@ namespace ECommerce_User.Services
         public void UpdateUser(User user,Guid userId)
         {
             User Data = _context.Users.Where(a => a.Id == userId).FirstOrDefault();
-            _context.SaveChanges();
+            
         }
         ///<summary>
         ///get the list of users

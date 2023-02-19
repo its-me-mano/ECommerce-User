@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿
+ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -46,8 +47,8 @@ namespace ECommerce_User.Controllers
         [SwaggerResponse(statusCode: 401, "The user is not authorized", typeof(ErrorDto))]
         [SwaggerResponse(statusCode: 500, "Internal Server Error", typeof(ErrorDto))]
         [Authorize]
-        [HttpPost("uploadFile/{user-Id}")]
-        public IActionResult UploadFiles([Required][FromRoute(Name ="user-Id")]Guid userId, [FromForm] IFormFile file)
+        [HttpPost("uploadFile")]
+        public IActionResult UploadFiles( [FromForm] IFormFile file)
         {
             string LoggedUserId= User.FindFirstValue(ClaimTypes.NameIdentifier); 
             _logger.LogInformation("Uploading file is processing");
@@ -59,13 +60,13 @@ namespace ECommerce_User.Controllers
             AssetDtoCreating imageCreateDto = new AssetDtoCreating();
             imageCreateDto.File = _service.ImageToString(file);
             Asset ImageEntity = _mapper.Map<Asset>(imageCreateDto);
-            ImageEntity.UserId = userId;
+            ImageEntity.UserId = new Guid(LoggedUserId);
             ImageEntity.CreateBy = new Guid(LoggedUserId);
             ImageEntity.DateCreated = DateTime.Now;
             ImageEntity.File = imageCreateDto.File;
             _service.SaveImage(ImageEntity); 
             imageCreateDto.Id = ImageEntity.Id;
-            imageCreateDto.UserId = userId;          
+            imageCreateDto.UserId = new Guid(LoggedUserId);          
             _logger.LogInformation("File uploaded successfully");
             return new JsonResult(imageCreateDto);
         }

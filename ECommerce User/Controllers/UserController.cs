@@ -12,10 +12,8 @@ using ECommerce_User.Entities.Model;
 using ECommerce_User.Models;
 using ECommerce_User.Entities.Dto;
 using System.Collections.Generic;
-using System.Net.Http.Json;
-using System.Threading.Tasks;
-using System.Net.Http.Json;
-using System.Net.Http;
+
+
 
 namespace ECommerce_User.Controllers
 {
@@ -126,7 +124,6 @@ namespace ECommerce_User.Controllers
                 _logger.LogError("UserId not found");
                 return StatusCode(404, _service.ErrorToReturn("404", "Check the userId"));
             }
-
         }
         /// <summary>
         /// Delete The User
@@ -147,17 +144,11 @@ namespace ECommerce_User.Controllers
         [SwaggerResponse(statusCode: 403, "user doesn't have permisssion to access this resource")]
         [SwaggerResponse(statusCode: 500, "Internal Server Error", typeof(ErrorDto))]
         [Authorize]
-        [HttpDelete("{user-Id}")]
-        public IActionResult DeleteUser([FromRoute(Name="user-Id")][Required] Guid userId)
+        [HttpDelete("delete")]
+        public IActionResult DeleteUser()
         {
-            if (_service.GetLoggedId(User).Equals(userId))
-            {
+                Guid userId = new Guid(_service.GetLoggedId(User));
                 _logger.LogInformation("Delete user process initiated");
-                if (!   _service.UserExists(userId))
-                {
-                    _logger.LogError("UserId not found");
-                    return StatusCode(404, _service.ErrorToReturn("404", "UserId not found"));
-                }
                 User userFromRepo = _service.GetUser(userId);
                 if (userFromRepo == null)
                 {
@@ -167,12 +158,7 @@ namespace ECommerce_User.Controllers
                 _service.DeleteUser(userFromRepo);
                 _logger.LogInformation("Userbook deleted successfully");
                 return StatusCode(200, "Address book deleted successfully");
-            }
-            else
-            {
-                _logger.LogError("user doesn't have permisssion to access this resource");
-                return StatusCode(403, "user doesn't have permisssion to access this resource");
-            }
+            
         }
         /// <summary>
         ///Create the user
@@ -190,7 +176,7 @@ namespace ECommerce_User.Controllers
         [SwaggerResponse(statusCode: 400, "The user input is not valid",typeof(ErrorDto))]
         [SwaggerResponse(statusCode: 401, "The user is not authorized", typeof(ErrorDto))]
         [SwaggerResponse(statusCode: 404, "MetaData does not exist", typeof(ErrorDto))]
-        [SwaggerResponse(statusCode: 409, "Email address or phone number already exist", typeof(ErrorDto))]
+        [SwaggerResponse    (statusCode: 409, "Email address or phone number already exist", typeof(ErrorDto))]
         [SwaggerResponse(statusCode: 500, "Internal Server Error", typeof(ErrorDto))]
         [Authorize]
         [HttpPost]
@@ -232,11 +218,10 @@ namespace ECommerce_User.Controllers
         [SwaggerResponse(statusCode: 409, "Email address or phone number already exist", typeof(ErrorDto))]
         [SwaggerResponse(statusCode: 500, "Internal Server Error", typeof(ErrorDto))]
         [Authorize]
-        [HttpPut("{user-Id}")]
-        public IActionResult UpdateUser([FromRoute(Name ="user-Id")][Required]Guid userId, [FromBody] UserUpdatingDto user)
+        [HttpPut("update")]
+        public IActionResult UpdateUser( [FromBody] UserUpdatingDto user)
         {
-            if (_service.GetUserRole(User) == "Admin" || _service.GetLoggedId(User).Equals(userId))
-            {
+                Guid userId = new Guid(_service.GetLoggedId(User));
                 _logger.LogInformation("UpdateUser has beed initiated");
                 Guid LoginUserId = new Guid(_service.GetLoggedId(User));
                 if (!_service.UserExists(userId))
@@ -264,13 +249,9 @@ namespace ECommerce_User.Controllers
                     return StatusCode(returnUpdate.status, _service.ErrorToReturn(Convert.ToString(returnUpdate.status), returnUpdate.description));
                 }
             }
-            else
-            {
-                _logger.LogError("user doesn't have permisssion to access this resource");
-                return StatusCode(403, "user doesn't have permisssion to access this resource");
-            }
+
         }
             
     }
-}
+
 

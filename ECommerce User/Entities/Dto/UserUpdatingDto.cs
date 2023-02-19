@@ -34,7 +34,7 @@ namespace ECommerce_User.Models
         ///</summary>
         [Required]
         [JsonProperty(PropertyName = "addresses")]
-        public ICollection<AddressUpdatingDto> Address { get; set; } = new List<AddressUpdatingDto>();
+        public ICollection<AddressUpdatingDto> Addresses { get; set; } = new List<AddressUpdatingDto>();
         ///<summary>
         ///list of email 
         ///</summary>
